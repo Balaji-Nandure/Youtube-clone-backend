@@ -1,0 +1,15 @@
+#env files
+.env
+.env.*
+
+#node modules
+/node_modules
+
+#vscode
+/.vscode
+
+#dist
+dist
+
+#build
+build
