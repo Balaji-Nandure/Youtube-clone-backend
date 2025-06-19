@@ -25,6 +25,10 @@ const generateAccessRefreshTokens = async (userId) => {
     }
 };
 
+export const getCurrentUser = asyncHandler(async (req, res) => {
+    return res.status(200).json(new ApiResponse(200, req.user, "User fetched successfully"));
+});
+
 export const registerUser = asyncHandler(async (req, res) => {
     // get data from request body
     // validation
@@ -209,4 +213,21 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
             error.message || "Something went wrong while refreshing access token"
         );
     }
+});
+
+export const changeCurrentPassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user?._id);
+
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+    if (!isPasswordCorrect) {
+        throw new ApiError(401, "Invalid password");
+    }
+
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(200).json(new ApiResponse(200, null, "Password changed successfully"));
 });
