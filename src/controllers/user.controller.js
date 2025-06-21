@@ -231,3 +231,17 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, null, "Password changed successfully"));
 });
+
+export const updateAccountDetails = asyncHandler(async (req, res) => {
+    const { fullName, username, email } = req.body;
+
+    if (!fullName && !username && !email) {
+        throw new ApiError(400, "Atleast one field is required");
+    }
+
+    const user = await User.findById(req.user?._id);
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+});
